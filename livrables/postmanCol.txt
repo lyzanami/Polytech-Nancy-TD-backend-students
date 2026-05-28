@@ -1,0 +1,5 @@
+GET /tasks/{id} : GET http://localhost:8080/tasks/1
+GET /tasks : GET http://localhost:8080/tasks
+POST /tasks : POST http://localhost:8080/tasks
+PUT /tasks/{id} : PUT http://localhost:8080/tasks/1 {"title": "Acheter du lait","description": "2 litres","done": false}
+DELETE /tasks/{id} : DELETE http://localhost:8080/tasks

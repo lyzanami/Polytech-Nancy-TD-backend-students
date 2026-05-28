@@ -37,6 +37,28 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Task'
+            get:
+                tags: [ tasks ]
+                summary: Récupérer toutes les tâches
+                operationId: getTasks
+                parameters:
+                - name: todo_only
+                    in: query
+                    description: Retourne les tâches à réaliser
+                    required: false
+                    schema:
+                    type: boolean
+                responses:
+                '200':
+                    description: Liste des tâches récupérée
+                    content:
+                    application/json:
+                        schema:
+                        type: array
+                        items:
+                            $ref: '#/components/schemas/Task'
+                '204':
+                    description: Not Found
 
     /tasks/{id}:
         parameters:
@@ -60,7 +82,34 @@ paths:
                             schema:
                                 $ref: '#/components/schemas/Task'
                 '404':
-                    description: Tâche non trouvée
+                    description: Not Found
+
+        put:
+            tags: [ tasks ]
+            summary: Modifier une tâche
+            operationId: updateTask
+            requestBody:
+            required: true
+            content:
+                application/json:
+                schema:
+                    $ref: '#/components/schemas/Task'
+            responses:
+            '204':
+                description: Tâche modifiée
+            '404':
+                description: Not Found
+
+        delete:
+            tags: [ tasks ]
+            summary: Supprimer une tâche
+            operationId: deleteTask
+            responses:
+            '204':
+                description: Tâche supprimée
+            '404':
+                description: Not Found
+
 components:
     schemas:
         Task:
