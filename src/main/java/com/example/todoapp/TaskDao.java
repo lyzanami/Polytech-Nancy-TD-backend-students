@@ -37,10 +37,19 @@ public class TaskDao {
         return Optional.ofNullable(storage.get(id));
     }
     
+    /**
+     * Retrieve all {@link Task} model.
+     * @return {@link Task} collection.
+     */
     public Collection<Task> findAll() {
         return storage.values();
     }
 
+    /**
+     * Delete {@link Task} model by id.
+     * @param id identifier of the {@link Task}.
+     * @return true if chosen {@link Task} exist and is deleted.
+     */
     public boolean deleteById(int id) {
         return storage.remove(id) != null;
     }
