@@ -28,6 +28,11 @@
       <artifactId>jackson-annotations</artifactId>
       <version>${jackson.version}</version>
     </dependency>
+    <dependency>
+       <groupId>org.xerial</groupId>
+       <artifactId>sqlite-jdbc</artifactId>
+       <version>3.45.2.0</version>
+    </dependency>
 
     <!-- Logging API + backend -->
     <dependency>

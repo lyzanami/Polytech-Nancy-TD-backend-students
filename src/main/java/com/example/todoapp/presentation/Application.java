@@ -1,5 +1,7 @@
-package com.example.todoapp;
+package com.example.todoapp.presentation;
 
+import com.example.todoapp.persistence.Task;
+import com.example.todoapp.persistence.TaskDao;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
 import org.slf4j.Logger;
