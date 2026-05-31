@@ -32,12 +32,10 @@ public class TaskDao {
 		try(Connection connection = DriverManager.getConnection(url);
 				Statement statement = connection.createStatement()) {
 			statement.execute(sqlCreateTable);
-			System.out.println("bitches !!");
 			save(new Task(1, "Réviser DS de maths", "Séries numériques et probabilités.", false));
 	        save(new Task(2, "Valider mon PIVE", "PIVE Club Poker.", true));
 	        save(new Task(3, "Choisir mon parcours de 4A", "SIR ou SIA ?", false));
 	    } catch (SQLException e) {
-	    	System.out.println("no bitches :(");
 	        throw new RuntimeException("Impossible d'initialiser la base de données SQLite", e);
 	    }
 	}
@@ -58,34 +56,31 @@ public class TaskDao {
      */
     public Task save(Task task) {
     	if (task.id() <= 0) {
-    		String sqlInsertIdRequest = "INSERT INTO tasks (title, description, done) VALUES (?, ?, ?)";
+    		StringBuilder sql = new StringBuilder("INSERT INTO tasks (title, description, done) VALUES (");
+    		sql.append(task.title());
+    		sql.append(",");
+    		sql.append(task.description());
+    		sql.append(",");
+    		sql.append(task.done() ? 1 : 0);
+    		sql.append(")");
     		try (Connection connection = DriverManager.getConnection(url);
-    				PreparedStatement preparedsatement = connection.prepareStatement(sqlInsertIdRequest, Statement.RETURN_GENERATED_KEYS)) {
-
-    			preparedsatement.setString(1, task.title());
-    			preparedsatement.setString(2, task.description());
-    			preparedsatement.setInt(3, task.done() ? 1 : 0);
-    			preparedsatement.executeUpdate();
-    			
-    			try (ResultSet resultset = preparedsatement.getGeneratedKeys()) {
-    				if (resultset.next()) {
-    					int resultId = resultset.getInt(1);
-    					return new Task(resultId, task.title(), task.description(), task.done());
-    				}
-    			}
+    				Statement statement = connection.createStatement()) {
+    			statement.execute(sql.toString());
     		} catch (SQLException e) {
     			e.printStackTrace();
     		}
     	} else {
-    		String sql = "UPDATE tasks SET title = ?, description = ?, done = ? WHERE id = ?";
+    		StringBuilder sql = new StringBuilder("UPDATE tasks SET title =");
+    		sql.append(task.title());
+    		sql.append(", description = ");
+    		sql.append(task.description());
+    		sql.append(", done = ");
+    		sql.append(task.done() ? 1 : 0);
+    		sql.append(" WHERE id = ");
+    		sql.append(task.id());
     		try (Connection connection = DriverManager.getConnection(url);
-    				PreparedStatement preparedsatement = connection.prepareStatement(sql)) {
-
-    			preparedsatement.setString(1, task.title());
-    			preparedsatement.setString(2, task.description());
-    			preparedsatement.setInt(3, task.done() ? 1 : 0);
-    			preparedsatement.setInt(4, task.id());
-    			preparedsatement.executeUpdate();
+    				Statement satement = connection.createStatement()) {
+    			satement.execute(sql.toString());
     			return task;
     		} catch (SQLException e) {
     			e.printStackTrace();
@@ -100,12 +95,12 @@ public class TaskDao {
      * @return {@link Task} model wrapped by Optional.
      */
     public Optional<Task> findById(int id) {
-    	String sqlFindIdRequest = "SELECT id, title, description, done FROM tasks WHERE id = ?";
+    	StringBuilder sql = new StringBuilder("SELECT id, title, description, done FROM tasks WHERE id = ");
+    	sql.append(id);
     	try(Connection connection = DriverManager.getConnection(url);
-    			PreparedStatement preparedstatement = connection.prepareStatement(sqlFindIdRequest)) {
-    		
-    		preparedstatement.setInt(1, id);
-    		try(ResultSet resultset = preparedstatement.executeQuery()) {
+    			Statement statement = connection.createStatement()) {
+   
+    		try(ResultSet resultset = statement.executeQuery(sql.toString())) {
     			if(resultset.next()) {
     				Task task = new Task(
     					resultset.getInt("id"),
@@ -129,11 +124,11 @@ public class TaskDao {
      */
     public Collection<Task> findAll() {
     	Collection<Task> tasks = new ArrayList<>();
-    	String sqlFindAllRequest = "SELECT id, title, description, done FROM tasks";
+    	String sql = "SELECT id, title, description, done FROM tasks";
     	
     	try(Connection connection = DriverManager.getConnection(url);
     			Statement statement = connection.createStatement();
-    			ResultSet resultset = statement.executeQuery(sqlFindAllRequest)) {
+    			ResultSet resultset = statement.executeQuery(sql)) {
     		
     		while (resultset.next()) {
     			tasks.add(new Task(
